@@ -4,7 +4,7 @@
     <TargetFramework>net48</TargetFramework>
     <Version>1.0</Version>
     <Title>DiscordPresence</Title>
-    <Description>Description of DiscordPresence</Description>
+    <Description>Send your file info to Discord.</Description>
     <TargetExt>.rhp</TargetExt>
     <PackageIcon>logo.png</PackageIcon>
     <Authors>秋水</Authors>

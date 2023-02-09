@@ -1,0 +1,16 @@
+---
+name: DiscordPresence
+version: 1.0.0
+authors:
+- 秋水
+description: >
+  Send your file info to Discord.
+
+url: https://www.food4rhino.com/en/app/discord-presence
+keywords:
+- discord
+- infomation
+- file
+
+icon_url: "https://raw.githubusercontent.com/ArchiDog1998/DiscordPresence/master/DiscordPresence/Resources/logo.png"
+
