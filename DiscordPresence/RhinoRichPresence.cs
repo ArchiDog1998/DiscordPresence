@@ -36,7 +36,11 @@ namespace DiscordPresence
                 Timestamps = new Timestamps(startTime),
             });
 
-            UpdateValue();
+            Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                UpdateValue();
+            });
         }
 
 
@@ -44,7 +48,6 @@ namespace DiscordPresence
         {
             UpdateRHInfo();
             UpdateGHInfo();
-            client.UpdateStartTime(startTime);
         }
 
 
@@ -52,16 +55,20 @@ namespace DiscordPresence
         static string rhinoFile;
         static void UpdateRHInfo()
         {
-            if (!true) return;
+            if (!DiscordPresencePlugin.Instance.ShowRhinocerosFile)
+            {
+                client.UpdateDetails("");
+                return;
+            }
             if (RhinoDoc.ActiveDoc == null) return;
 
-            var rhFile = RhinoDoc.ActiveDoc.Name;
+            var rhFile = RhinoDoc.ActiveDoc.Name ?? "Untitled.3dm";
             client.UpdateDetails(rhFile);
 
-            if (true && rhFile != rhinoFile)
+            if (rhFile != rhinoFile)
             {
                 rhinoFile = rhFile;
-                startTime = DateTime.UtcNow;
+                UpdateTime();
             }
         }
 
@@ -69,9 +76,10 @@ namespace DiscordPresence
         static string grasshopperFile;
         static void UpdateGHInfo()
         {
-            if(!true)
+            if(!DiscordPresencePlugin.Instance.ShowGrasshopperFile)
             {
-                client.UpdateSmallAsset();
+                client.UpdateSmallAsset("");
+                client.UpdateState("");
                 return;
             }
             if (Instances.ActiveCanvas?.Document == null) return;
@@ -80,12 +88,15 @@ namespace DiscordPresence
             client.UpdateState(ghFile);
             client.UpdateSmallAsset("grasshopper");
 
-            if(true && ghFile != grasshopperFile)
+            if(ghFile != grasshopperFile)
             {
                 grasshopperFile = ghFile;
-                startTime = DateTime.Now;
+                UpdateTime();
             }
         }
+
+        static void UpdateTime() => client.UpdateStartTime(DateTime.UtcNow);
+
 
         public static void Deinitialize()
         {

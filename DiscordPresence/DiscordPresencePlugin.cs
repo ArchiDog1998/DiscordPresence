@@ -4,19 +4,32 @@ using Rhino.PlugIns;
 using Rhino.UI;
 using System;
 using System.Collections.Generic;
+using System.Runtime;
 
 namespace DiscordPresence
 {
-    ///<summary>
-    /// <para>Every RhinoCommon .rhp assembly must have one and only one PlugIn-derived
-    /// class. DO NOT create instances of this class yourself. It is the
-    /// responsibility of Rhino to create an instance of this class.</para>
-    /// <para>To complete plug-in information, please also see all PlugInDescription
-    /// attributes in AssemblyInfo.cs (you might need to click "Project" ->
-    /// "Show All Files" to see it in the "Solution Explorer" window).</para>
-    ///</summary>
-    public class DiscordPresencePlugin : Rhino.PlugIns.PlugIn
+    public class DiscordPresencePlugin : PlugIn
     {
+        public bool  ShowRhinocerosFile 
+        { 
+            get => Settings.TryGetBool(nameof(ShowRhinocerosFile), out var value) ? value : true;
+            set
+            {
+                Settings.SetBool(nameof(ShowRhinocerosFile), value);
+                RhinoRichPresence.UpdateValue();
+            }
+        }
+
+        public bool ShowGrasshopperFile
+        {
+            get => Settings.TryGetBool(nameof(ShowGrasshopperFile), out var value) ? value : true;
+            set
+            {
+                Settings.SetBool(nameof(ShowGrasshopperFile), value);
+                RhinoRichPresence.UpdateValue();
+            }
+        }
+
         public override PlugInLoadTime LoadTime => PlugInLoadTime.AtStartup;
         public DiscordPresencePlugin()
         {
@@ -49,15 +62,22 @@ namespace DiscordPresence
 
         protected override void OptionsDialogPages(List<OptionsDialogPage> pages)
         {
-            base.OptionsDialogPages(pages);
+            pages.Add(new DiscordOptions());
         }
 
         ~ DiscordPresencePlugin()
         {
-            RhinoRichPresence.Deinitialize();
-            RhinoDoc.ActiveDocumentChanged -= RhinoDoc_ActiveDocumentChanged;
-            Instances.CanvasCreated -= Instances_CanvasCreated;
-            Instances.ActiveCanvas.DocumentChanged -= Canvas_DocumentChanged;
+            try
+            {
+                RhinoRichPresence.Deinitialize();
+                RhinoDoc.ActiveDocumentChanged -= RhinoDoc_ActiveDocumentChanged;
+                Instances.CanvasCreated -= Instances_CanvasCreated;
+                Instances.ActiveCanvas.DocumentChanged -= Canvas_DocumentChanged;
+            }
+            catch
+            {
+
+            }
         }
     }
 }
