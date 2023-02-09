@@ -19,6 +19,10 @@ namespace DiscordPresence
         }
 
         public override object PageControl => _panel ?? (_panel = new OptionsPagePanel());
+
+        public override System.Drawing.Image PageImage => Properties.Resources.logo;
+
+        public override string LocalPageTitle => "Discord Presence";
     }
 
     internal class OptionsPagePanel : Panel

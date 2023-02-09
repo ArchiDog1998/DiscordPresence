@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: PlugInDescription(DescriptionType.Email, "1123993881@qq.com")]
 [assembly: PlugInDescription(DescriptionType.Phone, "13656693463")]
 [assembly: PlugInDescription(DescriptionType.Fax, "")]
-[assembly: PlugInDescription(DescriptionType.Organization, "中建五局设计技术科研院")]
+[assembly: PlugInDescription(DescriptionType.Organization, "秋水")]
 [assembly: PlugInDescription(DescriptionType.UpdateUrl, "")]
 [assembly: PlugInDescription(DescriptionType.WebSite, "")]
 
