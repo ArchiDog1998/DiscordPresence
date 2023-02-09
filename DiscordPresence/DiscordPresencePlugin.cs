@@ -1,5 +1,9 @@
-﻿using Rhino;
+﻿using Grasshopper;
+using Rhino;
+using Rhino.PlugIns;
+using Rhino.UI;
 using System;
+using System.Collections.Generic;
 
 namespace DiscordPresence
 {
@@ -13,16 +17,47 @@ namespace DiscordPresence
     ///</summary>
     public class DiscordPresencePlugin : Rhino.PlugIns.PlugIn
     {
+        public override PlugInLoadTime LoadTime => PlugInLoadTime.AtStartup;
         public DiscordPresencePlugin()
         {
             Instance = this;
+            RhinoRichPresence.Initialize();
+
+            RhinoDoc.ActiveDocumentChanged += RhinoDoc_ActiveDocumentChanged;
+            Instances.CanvasCreated += Instances_CanvasCreated;
+        }
+
+        private void Instances_CanvasCreated(Grasshopper.GUI.Canvas.GH_Canvas canvas)
+        {
+            Instances.CanvasCreated -= Instances_CanvasCreated;
+            canvas.DocumentChanged += Canvas_DocumentChanged;
+        }
+
+        private void Canvas_DocumentChanged(Grasshopper.GUI.Canvas.GH_Canvas sender, Grasshopper.GUI.Canvas.GH_CanvasDocumentChangedEventArgs e)
+        {
+            RhinoRichPresence.UpdateValue();
+        }
+
+        private void RhinoDoc_ActiveDocumentChanged(object sender, DocumentEventArgs e)
+        {
+            RhinoRichPresence.UpdateValue();
         }
 
         ///<summary>Gets the only instance of the DiscordPresencePlugin plug-in.</summary>
         public static DiscordPresencePlugin Instance { get; private set; }
 
-        // You can override methods here to change the plug-in behavior on
-        // loading and shut down, add options pages to the Rhino _Option command
-        // and maintain plug-in wide options in a document.
+
+        protected override void OptionsDialogPages(List<OptionsDialogPage> pages)
+        {
+            base.OptionsDialogPages(pages);
+        }
+
+        ~ DiscordPresencePlugin()
+        {
+            RhinoRichPresence.Deinitialize();
+            RhinoDoc.ActiveDocumentChanged -= RhinoDoc_ActiveDocumentChanged;
+            Instances.CanvasCreated -= Instances_CanvasCreated;
+            Instances.ActiveCanvas.DocumentChanged -= Canvas_DocumentChanged;
+        }
     }
 }
