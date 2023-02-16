@@ -15,7 +15,7 @@ namespace DiscordPresence
         const string CLIENT_ID = "1073051898619367515";
         public static DiscordRpcClient client;
 
-        public static void Initialize()
+        private static void Initialize()
         {
             if (client != null) return;
 
@@ -35,32 +35,26 @@ namespace DiscordPresence
                 },
                 Timestamps = new Timestamps(startTime),
             });
+        }
 
-            Task.Run(async () =>
+        public static void UpdateValue() => Task.Run(() =>
             {
-                await Task.Delay(1000);
-                UpdateValue();
+                Initialize();
+                UpdateRHInfo();
+                UpdateGHInfo();
             });
-        }
-
-
-        public static void UpdateValue()
-        {
-            UpdateRHInfo();
-            UpdateGHInfo();
-        }
-
 
         static DateTime startTime = DateTime.UtcNow;
         static string rhinoFile;
         static void UpdateRHInfo()
         {
-            if (!DiscordPresencePlugin.Instance.ShowRhinocerosFile)
+            if (!DiscordPresencePlugin.Instance.ShowRhinocerosFile
+                || RhinoDoc.ActiveDoc == null)
             {
                 client.UpdateDetails("");
+                rhinoFile = "";
                 return;
             }
-            if (RhinoDoc.ActiveDoc == null) return;
 
             var rhFile = RhinoDoc.ActiveDoc.Name ?? "Untitled.3dm";
             client.UpdateDetails(rhFile);
@@ -72,17 +66,17 @@ namespace DiscordPresence
             }
         }
 
-
         static string grasshopperFile;
         static void UpdateGHInfo()
         {
-            if(!DiscordPresencePlugin.Instance.ShowGrasshopperFile)
+            if(!DiscordPresencePlugin.Instance.ShowGrasshopperFile
+                || Instances.ActiveCanvas?.Document == null)
             {
                 client.UpdateSmallAsset("");
                 client.UpdateState("");
+                grasshopperFile = "";
                 return;
             }
-            if (Instances.ActiveCanvas?.Document == null) return;
 
             string ghFile = Instances.ActiveCanvas.Document.DisplayName + ".gh";
             client.UpdateState(ghFile);

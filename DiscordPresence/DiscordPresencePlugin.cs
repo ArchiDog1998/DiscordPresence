@@ -34,7 +34,7 @@ namespace DiscordPresence
         public DiscordPresencePlugin()
         {
             Instance = this;
-            RhinoRichPresence.Initialize();
+            RhinoRichPresence.UpdateValue();
 
             RhinoDoc.ActiveDocumentChanged += RhinoDoc_ActiveDocumentChanged;
             Instances.CanvasCreated += Instances_CanvasCreated;
